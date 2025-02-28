@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atonkopi <atonkopi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmiilpal <mmiilpal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/06 11:39:44 by atonkopi          #+#    #+#             */
-/*   Updated: 2023/11/23 15:26:46 by atonkopi         ###   ########.fr       */
+/*   Created: 2023/08/09 15:19:59 by mmiilpal          #+#    #+#             */
+/*   Updated: 2023/11/29 13:34:43 by mmiilpal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,33 @@
 
 int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-	unsigned int	i;
-	unsigned int	j;
-
-	j = 0;
-	i = 0;
-	while (s1[i] && s2[i] && s1[i] == s2[i] && j < n)
+	while (*s1 && *s2 && *(unsigned char *)s1 == *(unsigned char *)s2 && n--)
 	{
-		i++;
-		j++;
+		s1++;
+		s2++;
 	}
-	if (j < n)
-		return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-	return (0);
+	if (n == 0)
+		return (0);
+	return (*(unsigned char *)s1 - *(unsigned char *)s2);
 }
+
+/*
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int	main(int argc, char *argv[])
+{
+	int	res;
+
+	if (argc == 4)
+	{
+		res = ft_strncmp(argv[1], argv[2], atoi(argv[3]));
+		printf("%d\n", res);
+	}
+	else
+	{
+		printf("wrong input\n");
+	}
+	return (0);
+}*/

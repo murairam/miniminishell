@@ -3,98 +3,80 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atonkopi <atonkopi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rbalazs <rbalazs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/21 14:27:22 by atonkopi          #+#    #+#             */
-/*   Updated: 2024/02/25 15:41:57 by atonkopi         ###   ########.fr       */
+/*   Created: 2023/11/30 19:37:37 by mmiilpal          #+#    #+#             */
+/*   Updated: 2024/07/12 20:51:21 by rbalazs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*get_remaining(char *stash)
+char	*read_char(int fd, char *buffer, char *temp)
 {
-	int		i;
-	char	*remaining;
-	int		len;
+	char	*char_read;
+	ssize_t	bytes;
 
-	i = 0;
-	while (stash[i] != '\n' && stash[i])
-		i++;
-	if (stash[i] == '\n')
-		i++;
-	len = 0;
-	while (stash[i + len])
-		len++;
-	remaining = malloc(len + 1);
-	if (!remaining)
-		return (free(stash), NULL);
-	remaining = ft_strncpy(remaining, stash + i, len);
-	free(stash);
-	return (remaining);
-}
-
-char	*exrtact_line(char *stash)
-{
-	int		i;
-	char	*line;
-
-	i = 0;
-	if (!*stash)
-		return (free(stash), NULL);
-	while (stash[i] != '\n' && stash[i])
-		i++;
-	if (stash[i] == '\n')
-		i++;
-	line = ft_substr(stash, 0, i);
-	if (!line)
-		return (free(line), NULL);
-	return (line);
-}
-
-char	*read_from_file(char *stash, int fd)
-{
-	char	*buffer;
-	ssize_t	bytes_read;
-	char	*temp;
-
-	buffer = malloc(BUFFER_SIZE + 1);
-	if (!buffer)
-		return (NULL);
-	bytes_read = 1;
-	while (!ft_strchr(stash, '\n') && bytes_read > 0)
+	bytes = 1;
+	while (bytes > 0)
 	{
-		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read == -1)
+		bytes = read(fd, temp, BUFFER_SIZE);
+		if (bytes == -1)
 			return (free(buffer), NULL);
-		buffer[bytes_read] = '\0';
-		temp = ft_strjoin(stash, buffer);
-		if (!stash)
-			return (free(stash), free(buffer), NULL);
-		free(stash);
-		stash = temp;
+		else if (bytes == 0)
+			break ;
+		temp[bytes] = 0;
+		if (!buffer)
+			buffer = ft_strdup("");
+		char_read = buffer;
+		buffer = ft_strjoin(char_read, temp);
+		free(char_read);
+		char_read = NULL;
+		if (ft_strchr(temp, '\n'))
+			break ;
 	}
-	free(buffer);
-	if (bytes_read == 0 && stash && *stash == '\0')
-		return (free(stash), NULL);
-	return (stash);
+	return (buffer);
+}
+
+char	*get_line(char *buffer)
+{
+	char	*line;
+	ssize_t	i;
+
+	i = 0;
+	while (buffer[i] != '\n' && buffer[i] != '\0')
+		i++;
+	if (buffer[i] == 0)
+		return (0);
+	line = ft_substr(buffer, i + 1, ft_strlen(buffer) - i);
+	if (line == NULL)
+		return (free(line), NULL);
+	buffer[i + 1] = 0;
+	return (line);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*stash;
+	static char	*buffer;
 	char		*line;
+	char		*temp;
 
-	if (BUFFER_SIZE <= 0 || fd < 0 || read(fd, 0, 0))
+	temp = (char *)malloc(BUFFER_SIZE + 1 * sizeof(char));
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	{
+		free(buffer);
+		buffer = NULL;
+		free(temp);
+		temp = NULL;
 		return (NULL);
-	if (!stash)
-		stash = ft_strdup("");
-	stash = read_from_file(stash, fd);
-	if (!stash)
+	}
+	if (!temp)
 		return (NULL);
-	line = exrtact_line(stash);
+	line = read_char(fd, buffer, temp);
+	free(temp);
+	temp = NULL;
 	if (!line)
-		return (free(stash), NULL);
-	stash = get_remaining(stash);
+		return (NULL);
+	buffer = get_line(line);
 	return (line);
 }

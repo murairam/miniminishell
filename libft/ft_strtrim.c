@@ -3,61 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atonkopi <atonkopi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmiilpal <mmiilpal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/13 14:13:28 by atonkopi          #+#    #+#             */
-/*   Updated: 2023/11/29 12:48:54 by atonkopi         ###   ########.fr       */
+/*   Created: 2023/11/20 20:24:17 by mari              #+#    #+#             */
+/*   Updated: 2023/11/24 13:24:18 by mmiilpal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static size_t	get_size(char const *s1, char const *set)
-{
-	int	i;
-	int	size;
-
-	i = 0;
-	size = 0;
-	while (s1[i] && ft_strchr(set, s1[i]))
-	{
-		i++;
-		size++;
-	}
-	i = ft_strlen(s1) - 1;
-	while (i && ft_strchr(set, s1[i]))
-	{
-		i--;
-		size++;
-	}
-	return (ft_strlen(s1) - size);
-}
-
 char	*ft_strtrim(char const *s1, char const *set)
 {
-	char	*result;
-	int		i;
-	int		j;
-	int		k;
-	int		size;
+	int		start;
+	int		end;
+	char	*str;
 
-	if (!s1 || !set || !*s1 || s1[0] == '\n')
+	if (!s1 || !set)
 		return (NULL);
-	size = get_size(s1, set) + 1;
-	if (size <= 0)
-		size = 1;
-	result = malloc(sizeof(char) * size);
-	if (!result)
+	start = 0;
+	end = ft_strlen(s1) - 1;
+	while (ft_strchr(set, s1[start]) && start <= end)
+		start++;
+	if (start > end)
+		return (ft_strdup(s1 + end + 1));
+	while (ft_strchr(set, s1[end]) && end >= 0)
+		end--;
+	str = malloc(end - start + 2);
+	if (!str)
 		return (NULL);
-	i = 0;
-	while (ft_strchr(set, s1[i]))
-		i++;
-	j = ft_strlen(s1) - 1;
-	while (ft_strchr(set, s1[j]))
-		j--;
-	k = 0;
-	while (i <= j)
-		result[k++] = s1[i++];
-	result[k] = '\0';
-	return (result);
+	ft_strlcpy(str, &s1[start], end - start + 2);
+	return (str);
 }

@@ -3,27 +3,42 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atonkopi <atonkopi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmiilpal <mmiilpal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/06 11:39:29 by atonkopi          #+#    #+#             */
-/*   Updated: 2023/11/27 18:42:05 by atonkopi         ###   ########.fr       */
+/*   Created: 2023/11/07 21:08:17 by mmiilpal          #+#    #+#             */
+/*   Updated: 2023/11/29 12:14:47 by mmiilpal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strchr(const char *s, int c)
+char	*ft_strchr(char const *s, int c)
 {
-	unsigned long	i;
-	unsigned long	size;
-
-	i = 0;
-	size = ft_strlen(s);
-	while (i <= size)
+	while (*s)
 	{
-		if (s[i] == (unsigned char)c)
-			return ((char *)s + i);
-		i++;
+		if (*s == (char)c)
+			return ((char *)s);
+		s++;
 	}
-	return (NULL);
+	if (*s == (char)c)
+		return ((char *)s);
+	else
+		return (NULL);
 }
+
+/*
+#include <stdio.h>
+#include <string.h>
+#include <stddef.h>
+int main ()
+{
+   const char str[] = "https://www.tutorialspoint.com";
+   const char ch = '.';
+   char *ret;
+
+   ret = ft_strchr(str, ch);
+
+   printf("String after |%c| is - |%s|\n", ch, ret);
+
+   return(0);
+}*/

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atonkopi <atonkopi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmiilpal <mmiilpal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/09 18:56:58 by atonkopi          #+#    #+#             */
-/*   Updated: 2024/05/09 18:58:13 by atonkopi         ###   ########.fr       */
+/*   Created: 2025/02/25 16:04:55 by mmiilpal          #+#    #+#             */
+/*   Updated: 2025/02/25 16:24:04 by mmiilpal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "libft.h"
 
 char	*ft_strndup(char *s, int n)
 {

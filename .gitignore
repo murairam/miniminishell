@@ -1,0 +1,9 @@
+/objs
+*.o
+/bin
+libft.a
+minishell
+infile
+outfile
+log_errors.txt
+vgcore.*

@@ -3,35 +3,48 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atonkopi <atonkopi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmiilpal <mmiilpal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/06 11:39:46 by atonkopi          #+#    #+#             */
-/*   Updated: 2023/11/13 14:13:02 by atonkopi         ###   ########.fr       */
+/*   Created: 2023/11/08 17:48:02 by mmiilpal          #+#    #+#             */
+/*   Updated: 2023/11/24 14:38:20 by mmiilpal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strnstr(const char *s1, const char *s2, size_t n)
+char	*ft_strnstr(const char *big, const char *little, size_t len)
 {
-	unsigned long	i;
-	int				j;
+	size_t	len_little;
 
-	i = 0;
-	if (!*s2)
-		return ((char *)s1);
-	if (n <= 0)
+	len_little = ft_strlen(little);
+	if (!little || *little == '\0')
+		return ((char *) big);
+	if (len <= 0)
 		return (NULL);
-	while (i < n && s1[i])
+	while (*big && len >= len_little)
 	{
-		j = 0;
-		while (s1[i + j] == s2[j])
-		{
-			if ((s2[j + 1] == 0) && ((j + i) < n))
-				return ((char *)s1 + i);
-			j++;
-		}
-		i++;
+		while (*big == *little && ft_strncmp(big, little, len_little) == 0)
+			return ((char *) big);
+		big++;
+		len--;
 	}
 	return (NULL);
 }
+/*
+#include <stdio.h>
+#include <string.h>
+#include <stddef.h>
+int main() {
+    const char *haystack = "Hello, world! This is a test.";
+    const char *needle = "world";
+
+    char *result = ft_strnstr(haystack, needle, strlen(haystack));
+
+    if (result) {
+        printf("Needle found at position: %ld\n", result - haystack);
+    } else {
+        printf("Needle not found.\n");
+    }
+
+    return 0;
+}*/

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atonkopi <atonkopi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mari <mari@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/06 11:39:38 by atonkopi          #+#    #+#             */
-/*   Updated: 2023/11/22 11:38:00 by atonkopi         ###   ########.fr       */
+/*   Created: 2023/08/08 16:51:14 by mmiilpal          #+#    #+#             */
+/*   Updated: 2023/11/20 20:50:57 by mari             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,33 @@
 
 size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 {
-	unsigned int	i;
+	size_t	i;
 
 	i = 0;
-	if (size)
+	if (size > 0)
 	{
-		while (src[i] && i < size - 1)
+		while (src[i] && i < (size - 1))
 		{
 			dst[i] = src[i];
 			i++;
 		}
-		dst[i] = '\0';
+		dst[i] = 0;
 	}
-	return (ft_strlen(src));
+	while (src[i])
+		i++;
+	return (i);
 }
+
+/*
+#include <stdio.h>
+
+int	main(void)
+{
+	unsigned int	i;
+
+	i = 5;
+	char    src[] = "Lunchtime doubly so.";
+	char    dst[] = "Time is an illusion.";
+	printf("%u", ft_strlcpy(dst, src, i));
+	return (0);
+}*/

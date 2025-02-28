@@ -3,36 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi_long.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlabonde <jlabonde@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmiilpal <mmiilpal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/09 16:26:49 by atonkopi          #+#    #+#             */
-/*   Updated: 2024/04/22 14:49:46 by jlabonde         ###   ########.fr       */
+/*   Created: 2025/02/14 19:04:43 by mmiilpal          #+#    #+#             */
+/*   Updated: 2025/02/26 15:25:12 by mmiilpal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-long	ft_atoi_long(const char *str)
+long	ft_atoi_long(const char *str, char **endptr)
 {
-	long	sign;
 	long	result;
-	int		i;
+	int		sign;
 
-	sign = 1;
 	result = 0;
-	i = 0;
-	while (str[i] == ' ' || (str[i] >= '\t' && str[i] <= '\r'))
-		i++;
-	if (str[i] == '-' || str[i] == '+')
+	sign = 1;
+	while (ft_isspace(*str))
+		str++;
+	if (*str == '-' || *str == '+')
 	{
-		if (str[i] == '-')
-			sign *= -1;
-		i++;
+		if (*str == '-')
+			sign = -1;
+		str++;
 	}
-	while (str[i] >= '0' && str[i] <= '9')
+	while (ft_isdigit(*str))
 	{
-		result = 10 * result + (str[i] - '0');
-		i++;
+		result = result * 10 + (*str - '0');
+		str++;
 	}
+	if (endptr)
+		*endptr = (char *)str;
 	return (result * sign);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atonkopi <atonkopi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rbalazs <rbalazs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/13 14:09:57 by atonkopi          #+#    #+#             */
-/*   Updated: 2023/11/24 13:22:43 by atonkopi         ###   ########.fr       */
+/*   Created: 2023/08/19 20:59:10 by mmiilpal          #+#    #+#             */
+/*   Updated: 2024/09/17 16:58:23 by rbalazs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,42 @@
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
-	char			*result;
-	unsigned long	i;
-	int				j;
+	char	*str;
+	char	*str_ptr;
 
 	if (!s1 || !s2)
 		return (NULL);
-	result = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1));
-	if (!result)
+	str = (char *) malloc (sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (!str)
 		return (NULL);
-	i = 0;
-	while (i < ft_strlen(s1))
-	{
-		result[i] = s1[i];
-		i++;
-	}
-	j = 0;
-	while (i < (ft_strlen(s1) + ft_strlen(s2)))
-	{
-		result[i] = s2[j];
-		i++;
-		j++;
-	}
-	result[i] = '\0';
-	return (result);
+	str_ptr = str;
+	while (*s1)
+		*str++ = *s1++;
+	while (*s2)
+		*str++ = *s2++;
+	*str = '\0';
+	return (str_ptr);
 }
+
+/*
+#include <stdlib.h>
+#include <stdio.h>
+
+int main() {
+    // Test strings
+    const char *string1 = "Hello, ";
+    const char *string2 = "World!";
+
+    // Test the ft_strjoin function
+    char *resultString = ft_strjoin(string1, string2);
+
+    // Print the results
+    printf("String 1: %s\n", string1);
+    printf("String 2: %s\n", string2);
+    printf("Joined String: %s\n", resultString);
+
+    // Free the memory allocated for the result string
+    free(resultString);
+
+    return 0;
+}*/

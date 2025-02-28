@@ -1,46 +1,101 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mmiilpal <mmiilpal@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/02/07 13:39:46 by mmiilpal          #+#    #+#              #
+#    Updated: 2025/02/28 18:58:12 by mmiilpal         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = minishell
-
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+RM = rm -f
+FLAGS = -Wall -Wextra -Werror -g3
+LIBFTDIR = libft/
+OBJ_DIR = build/
+INC = -Iinc -Isrcs
+LDLIBS = -lreadline
 
-INCLUDES = -I includes -I libft
+LIBS = -L$(LIBFTDIR) -lft
 
-SRC = 	src/main.c\
-		src/builtins/ft_pwd.c src/builtins/ft_cd.c src/builtins/ft_echo.c src/builtins/ft_exit.c src/builtins/ft_env.c\
-		src/builtins/ft_export.c src/builtins/ft_unset.c src/builtins/utils.c\
-        src/utils/array.c src/utils/linked_lists.c src/utils/cleanup.c src/utils/errors.c src/utils/signals.c\
-        src/executer/executer.c src/executer/redirections.c src/executer/exec_utils.c src/executer/open_fds.c\
-        src/executer/get_command.c src/executer/redirections_utils.c\
-		src/expander/expander.c src/expander/expander_utils.c src/expander/quotes_removal.c \
-        src/lexer/lexer.c src/lexer/types.c src/lexer/lexer_utils.c src/lexer/syntax.c src/lexer/heredoc.c\
-        src/parser/cmds_ops.c src/parser/parser.c src/parser/redirections_ops.c src/parser/tokens_ops.c \
-		src/env/env_list.c src/env/env_str.c src/env/env_global.c src/env/env_init.c \
+SRCS = srcs/main.c\
+	srcs/builtins/env_set_free.c\
+	srcs/builtins/env_init.c\
+	srcs/builtins/env_utils.c\
+	srcs/builtins/echo.c\
+	srcs/builtins/env.c\
+	srcs/builtins/pwd.c\
+	srcs/builtins/unset.c\
+	srcs/builtins/export.c\
+	srcs/builtins/exit.c\
+	srcs/builtins/cd.c\
+	srcs/builtins/export_utils.c\
+	srcs/exec/exec_cmd.c\
+	srcs/exec/exec_open.c\
+	srcs/exec/exec.c\
+	srcs/exec/exec_redirs.c\
+	srcs/exec/exec_fds_utils.c\
+	srcs/exec/shlvl.c\
+	srcs/exec/utils.c\
+	srcs/lexing/expand.c\
+	srcs/lexing/grammar_check.c\
+	srcs/lexing/heredoc.c\
+	srcs/lexing/lex.c\
+	srcs/lexing/redir_types.c\
+	srcs/lexing/remove_quotes.c\
+	srcs/lexing/string_utils.c\
+	srcs/lexing/syntax_check.c\
+	srcs/parsing/create_command.c\
+	srcs/parsing/parse.c\
+	srcs/parsing/redirs_utils.c\
+	srcs/parsing/tokens_utils.c\
+	srcs/signal/signal.c\
+	srcs/utils/errors.c\
+	srcs/utils/stack_utils.c\
+	srcs/utils/free.c\
 
-OBJ_DIR = obj
-OBJ := $(patsubst src/%.c,$(OBJ_DIR)/%.o,$(SRC))
+INDI	=	\033[38;5;213m
+GREEN	=	\033[0;32m
+RESET	=	\033[00m
 
-LIBFT = libft/libft.a
+OBJS = $(patsubst %.c,$(OBJ_DIR)%.o,$(SRCS))
 
-all: $(NAME)
-
-$(OBJ_DIR)/%.o: src/%.c
+$(OBJ_DIR)%.o: %.c
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
+	@$(CC) $(FLAGS) $(INC) -c $< -o $@
 
-$(NAME): $(LIBFT) $(OBJ)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $(NAME) $(OBJ) -L libft -lft -lreadline
+OBJS = $(patsubst %.c,$(OBJ_DIR)%.o,$(SRCS))
 
-$(LIBFT):
-	make -C libft
+all: check $(NAME)
+
+$(NAME): $(OBJS)
+	@$(MAKE) -s -C $(LIBFTDIR)
+	@$(CC) $(FLAGS) -lm $(OBJS) $(LIBS) -o $(NAME) $(LDLIBS)
+	@echo "$(INDI)The best minishell in the world is compiled!$(RESET)"
+
+check:
+	@if [ -f $(NAME) ]; then \
+		latest_obj=$$(find $(OBJ_DIR) -type f -name '*.o' -newer $(NAME) | wc -l); \
+		latest_src=$$(find srcs -type f -name '*.c' -newer $(NAME) | wc -l); \
+		if [ "$$latest_obj" -eq 0 ] && [ "$$latest_src" -eq 0 ]; then \
+			echo "no updates, using last version of minishell exec"; \
+		fi \
+	fi
+
+create_dirs:
+	@mkdir -p $(OBJ_DIR)
 
 clean:
-	make clean -C libft
-	rm -rf $(OBJ_DIR)
+	@rm -rf $(OBJ_DIR)
+	@$(MAKE) -s -C $(LIBFTDIR) clean
 
 fclean: clean
-	make fclean -C libft
-	rm -f $(NAME)
+	@$(RM) $(NAME)
+	@$(MAKE) -s -C $(LIBFTDIR) fclean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean create_dirs re check

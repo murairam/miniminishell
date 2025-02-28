@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_isalpha.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: atonkopi <atonkopi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmiilpal <mmiilpal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/06 11:33:46 by atonkopi          #+#    #+#             */
-/*   Updated: 2023/11/29 14:31:27 by atonkopi         ###   ########.fr       */
+/*   Created: 2023/08/08 11:10:00 by mmiilpal          #+#    #+#             */
+/*   Updated: 2023/11/12 18:20:35 by mmiilpal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,27 @@
 
 int	ft_isalpha(int c)
 {
-	return ((c >= 65 && c <= 90) || (c >= 97 && c <= 122));
+	if (c >= 'a' && c <= 'z')
+	{
+		return (1);
+	}
+	if (c >= 'A' && c <= 'Z')
+	{
+		return (1);
+	}
+	return (0);
 }
+
+/*
+#include <stdio.h>
+#include <stdlib.h>
+
+int	main(int argc, char *argv[])
+{
+	if (argv)
+	{
+		char	chr = '3';
+		printf("%d\n", ft_isalpha(chr));
+	}
+	return (0);
+}*/
