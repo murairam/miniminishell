@@ -226,7 +226,7 @@ Exit the shell using `Ctrl+D`:
 ## 🔥 Fun Facts
 
 - **Why did we build this?** Because it was part of our curriculum at **42 Paris**!
-- **Most frustrating bug?** Parsing unclosed quotes. `"Hello World` -> 😭
+- **Most frustrating bug?** Parsing quotes, especially unclosed quotes. `"Hello World` -> 😭
 - **Proudest moment?** Getting pipes and redirections to work seamlessly!
 
 ---
