@@ -1,111 +1,221 @@
-**minishell**
+# 🐚 Welcome to Minishell!
 
-***about***
+Minishell is a **mini Unix shell** built as part of our **42 Paris** curriculum. It’s a lightweight version of Bash, handling commands, pipes, and redirections. We had a lot of fun building it, and now you can have fun using it! 😃
 
-https://github.com/mcombeau/minishell/blob/main/sources/signals/signal.c
+---
 
-https://m4nnb3ll.medium.com/minishell-building-a-mini-bash-a-42-project-b55a10598218
+## 🎉 Features
 
-https://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing
+- 🛠️ **Run Commands**: Execute built-in and external commands with ease.
+- 🔗 **Pipes (`|`)**: Chain multiple commands together.
+- 📂 **Redirections (`<`, `>`, `>>`, `<<`)**: Redirect input and output like a pro.
+- 🌍 **Environment Variables (`$VAR`)**: Expand variables dynamically.
+- 🎭 **Signal Handling**: Handles `Ctrl+C`, `Ctrl+D`, and `Ctrl+\` properly.
+- 🚀 **Custom Tokenizer & Parser**: Breaks down and processes user input.
 
-https://tldp.org/LDP/Bash-Beginners-Guide/html/index.html
+⚠️ **Note**: This project only includes the mandatory requirements—no `&&`, `||`, `;`, or wildcards (`*`).
 
-https://www.gnu.org/software/bash/manual/bash.html
+---
 
-shorter HOWTO
-https://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO.html
-	https://www.linuxdoc.org/HOWTO/Bash-Prog-Intro-HOWTO-9.html
+## 🛠️ How We Built It
 
-https://eli.thegreenplace.net/2009/03/20/
-a-recursive-descent-parser-with-an-infix-expression-evaluator
+Minishell was a team effort! **I worked on lexing, parsing, and signals**, while my friend **handled execution and built-in commands**. Here’s how it works under the hood:
 
-https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_10
+1. **Lexing**: The input is broken into tokens (words, operators, etc.), while keeping quotes intact and expanding variables like `$HOME`.
+2. **Parsing**: We check for syntax errors and organize the command structure.
+3. **Execution**: Built-ins like `cd`, `echo`, and `export` are handled internally, while external commands are passed to `execve`.
+4. **Pipes & Redirections**: Commands are linked with pipes, and I/O redirections are properly handled.
+5. **Signal Handling**: Prevents unwanted crashes from `Ctrl+C`, `Ctrl+D`, etc.
 
-https://trove.assistants.epita.fr/docs/42sh/lexer-parser
+---
 
-https://www.geeksforgeeks.org/developing-linux-based-shell/
+## 🔽 Getting Started
 
-https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf
-
-https://medium.com/swlh/lets-build-a-linux-shell-part-iii-a472c0102849
-
-https://medium.com/swlh/lets-build-a-linux-shell-part-ii-340ecf471028
-
-https://github.com/twagger/minishell
-
-https://minishell.org/check__exitcode_8c.html
-
-```c
-git checkout feature/feature_b
-git pull
-git checkout feature/feature_a
-git merge feature/feature_b
+### 1️⃣ Clone the Repo
+```bash
+git clone https://github.com/murairam/miniminishell.git
+cd miniminishell
 ```
 
-steps
-1. main char **envp
-2. pass path of binary files
-3. fork before excve (otherwise rewrites our processes)
+### 2️⃣ Compile It
+```bash
+make
+```
 
-notes
-minitalk can be used for ctrl + d and ctrl + c
+### 3️⃣ Start Your Shell
+```bash
+./minishell
+```
 
+### 4️⃣ Exit
+```bash
+exit
+```
 
- Minishell - Project Flow
+---
 
-     Define Grammar
+## 🚀 Try These Commands in Minishell
 
-     Identify Right Parsing Technique
-        Research and select the most suitable parsing method (e.g., recursive descent parser).
+### 📢 Basic Commands
 
-     Lexer (Tokenization)
-        Tokenize the input string into meaningful components (tokens)
-        VERY IMPORTANT: Quotes: Recognize and preserve tokens within quotes as single units (e.g., "Hello World" should be a single token) also              preserve the $ variables.
+```bash
+echo "Hello, World!"
+```
 
-     Parsing
-        Parsing Validations: Ensure tokens follow the correct syntax rules.
-        Handle Syntax Errors: Provide meaningful error messages.
+```bash
+pwd
+```
 
-        Expand Variables: Replace $ tokens with their corresponding values.
-				Expand Variables: After tokenization, and while parsing, you should expand the variables. The order here is critical:
-              Outside Quotes: If a variable appears outside of quotes, replace it with its value immediately.
-              Inside Double Quotes ("): Variables inside double quotes should be expanded. For example, "Hello $USER" should expand $USER but
-              preserve the other content.
-              Inside Single Quotes ('): Variables inside single quotes should not be expanded. For example, '$USER' should remain as "$USER" without
-              expansion.
-      Remove Quotes Last: After variable expansion, remove the quotes.
+```bash
+cd ..
+pwd
+```
 
-        Split Commands: Divide the input into individual commands.
-        Create Command List: Structure commands and arguments for execution.
+```bash
+env | grep PATH
+```
 
-     Redirections
-        Check Redirections: (<, >, >>).
-        File Handling: Create and manage necessary files for redirections.
+### 🌍 Environment Variable Handling
 
-     Pipes
+```bash
+export TEST_VAR=42
+echo $TEST_VAR
+```
 
-     Built-ins
+```bash
+unset TEST_VAR
+echo $TEST_VAR
+```
 
-     Execution
+### 🔗 Using Pipes
 
-     Heredocs
+```bash
+ls -l | grep minishell
+```
 
-     Testing & Debugging
+```bash
+echo "Hello World" | tr '[:lower:]' '[:upper:]'
+```
 
+```bash
+cat input.txt | sort | uniq -c
+```
 
-**bash**
-pipes
+### 📂 Redirections
 
-The order of expansions is: brace expansion; tilde expansion, parameter and variable expansion, arithmetic expansion, and command substitution (done in a left-to-right fashion); word splitting; and pathname expansion. .... After these expansions are performed, quote characters present in the original word are removed unless they have been quoted themselves (quote removal).
+```bash
+echo "This is a test" > output.txt
+```
 
-https://git.kernel.org/pub/scm/utils/dash/dash.git/tree/src/parser.c
-https://www.oilshell.org/blog/2019/02/07.html
-https://www.oilshell.org/blog/2017/12/15.html
+```bash
+cat < output.txt
+```
 
-https://eli.thegreenplace.net/2007/11/24/the-context-sensitivity-of-cs-grammar
+```bash
+ls > list.txt
+```
 
-https://gallium.inria.fr/%7Efpottier/publis/jourdan-fpottier-2016.pdf
+```bash
+echo "Appending this line" >> output.txt
+```
 
-https://tldp.org/LDP/abs/html/exitcodes.html
+### 🧪 Additional Test Cases
 
+```bash
+echo "Test" | wc -c
+```
 
+```bash
+head -n 5 < input.txt
+```
+
+```bash
+grep "search_term" < input.txt > output.txt
+```
+
+```bash
+cat non_existent_file
+```
+
+```bash
+cd /tmp
+pwd
+```
+
+```bash
+echo $?
+```
+
+```bash
+/bin/ls
+```
+
+```bash
+/bin/ls | wc -l
+```
+
+```bash
+echo "Hello" > temp.txt
+cat < temp.txt
+```
+
+```bash
+echo "Line 1" > temp.txt
+echo "Line 2" >> temp.txt
+cat < temp.txt
+```
+
+### 🎭 Signal Handling
+
+```bash
+# Press Ctrl+C to interrupt the current process
+```
+
+```bash
+# Press Ctrl+D to exit the shell
+```
+
+---
+
+## 📚 References & Learning Resources
+
+- [Bash Beginner’s Guide](https://tldp.org/LDP/Bash-Beginners-Guide/html/index.html)
+- [GNU Bash Manual](https://www.gnu.org/software/bash/manual/bash.html)
+- [Writing Your Own Shell](https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf)
+- [42 School Minishell Example](https://github.com/twagger/minishell)
+- [Lexers & Parsers in Shells](https://trove.assistants.epita.fr/docs/42sh/lexer-parser)
+- [Parsing Expressions](https://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing)
+- [Signals in Shells](https://github.com/mcombeau/minishell/blob/main/sources/signals/signal.c)
+- [Minishell Bash HOWTO](https://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO.html)
+- [POSIX Shell Specification](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_10)
+- [Developing a Linux Shell](https://www.geeksforgeeks.org/developing-linux-based-shell/)
+- [Context Sensitivity in Grammar](https://eli.thegreenplace.net/2007/11/24/the-context-sensitivity-of-cs-grammar)
+- [Dash Shell Parser](https://git.kernel.org/pub/scm/utils/dash/dash.git/tree/src/parser.c)
+- [Oil Shell Insights](https://www.oilshell.org/blog/2019/02/07.html)
+
+---
+
+## 🛠️ Development Workflow
+
+### 🐞 Debugging With Valgrind
+```bash
+valgrind --leak-check=full ./minishell
+```
+
+---
+
+## 🔥 Fun Facts
+
+- **Why did we build this?** Because it was part of our curriculum at **42 Paris**!
+- **Most frustrating bug?** Parsing unclosed quotes. `"Hello World` -> 😭
+- **Proudest moment?** Getting pipes and redirections to work seamlessly!
+
+---
+
+## 🐝 License
+
+This project is for educational purposes only. Feel free to use it as a learning reference.
+
+---
+
+🚀 **Happy Shell Scripting!**
