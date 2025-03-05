@@ -17,6 +17,18 @@ Minishell is a **mini Unix shell** built as part of our **42 Paris** curriculum.
 
 ---
 
+## 🛠️ How We Built It
+
+Minishell was a team effort! **I worked on lexing, parsing, and signals**, while [Ralph](https://github.com/MortalTrex/best_minishell) **handled execution and built-in commands**. Here’s how it works under the hood:
+
+1. **Lexing**: The input is broken into tokens (words, operators, etc.), while keeping quotes intact and expanding variables like `$HOME`.
+2. **Parsing**: We check for syntax errors and organize the command structure.
+3. **Execution**: Built-ins like `cd`, `echo`, and `export` are handled internally, while external commands are passed to `execve`.
+4. **Pipes & Redirections**: Commands are linked with pipes, and I/O redirections are properly handled.
+5. **Signal Handling**: Prevents unwanted crashes from `Ctrl+C`, `Ctrl+D`, etc.
+
+---
+
 ## 🔽 Getting Started
 
 ### 1️⃣ Clone the Repo
