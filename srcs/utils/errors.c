@@ -6,7 +6,7 @@
 /*   By: mmiilpal <mmiilpal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 11:31:53 by rbalazs           #+#    #+#             */
-/*   Updated: 2025/02/28 16:08:07 by mmiilpal         ###   ########.fr       */
+/*   Updated: 2025/03/02 12:00:55 by mmiilpal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	print_error(char *cmd, char *error, char *arg)
 {
-	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd("minishell> ", STDERR_FILENO);
 	if (cmd)
 	{
 		ft_putstr_fd(cmd, STDERR_FILENO);
@@ -32,7 +32,7 @@ void	print_error(char *cmd, char *error, char *arg)
 
 int	handle_token_syntax_error(char *token, t_data *data)
 {
-	ft_putstr_fd("minishell: syntax error near unexpected token `", \
+	ft_putstr_fd("minishell> syntax error near unexpected token `", \
 		STDERR_FILENO);
 	ft_putstr_fd(token, STDERR_FILENO);
 	ft_putstr_fd("'\n", STDERR_FILENO);
@@ -42,14 +42,14 @@ int	handle_token_syntax_error(char *token, t_data *data)
 
 int	syntax_error_eof(void)
 {
-	ft_putstr_fd("minishell: syntax error: unexpected end of file\n", \
+	ft_putstr_fd("minishell> syntax error: unexpected end of file\n", \
 		STDERR_FILENO);
 	return (1);
 }
 
 void	print_warning(char *arg)
 {
-	ft_putstr_fd("minishell: warning: here-document delimited by \
+	ft_putstr_fd("minishell> warning: here-document delimited by \
 					end-of-file (wanted `", STDERR_FILENO);
 	ft_putstr_fd(arg, STDERR_FILENO);
 	ft_putstr_fd("')\n", STDERR_FILENO);

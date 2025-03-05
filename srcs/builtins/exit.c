@@ -6,7 +6,7 @@
 /*   By: mmiilpal <mmiilpal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 11:32:15 by rbalazs           #+#    #+#             */
-/*   Updated: 2025/02/27 16:01:05 by mmiilpal         ###   ########.fr       */
+/*   Updated: 2025/03/02 12:00:37 by mmiilpal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static int	get_exit_status(t_cmd *commands, char *arg,
 	{
 		if (pipe == false)
 			ft_putstr_fd("exit\n", STDOUT_FILENO);
-		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
+		ft_putstr_fd("minishell> exit: ", STDERR_FILENO);
 		ft_putstr_fd(arg, STDERR_FILENO);
 		ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
 		data->exit_status = 2;

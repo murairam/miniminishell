@@ -6,29 +6,31 @@
 /*   By: mmiilpal <mmiilpal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 11:32:07 by rbalazs           #+#    #+#             */
-/*   Updated: 2025/02/27 15:30:16 by mmiilpal         ###   ########.fr       */
+/*   Updated: 2025/03/02 12:00:24 by mmiilpal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	update_pwd_value(t_data *data, char *command)
+static int	update_pwd_value(t_data *data, char *command)
 {
 	char	cwd[4096];
 	char	*old_dir;
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
-		ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
+		ft_putstr_fd("minishell> cd: ", STDERR_FILENO);
 		perror(command);
-		return ;
+		data->exit_status = 1;
+		return (1);
 	}
 	old_dir = ft_getenv(data->env, "PWD");
 	if (!old_dir)
-		return ;
+		return (1);
 	ft_setenv(data->env, "OLDPWD", old_dir);
 	free(old_dir);
 	ft_setenv(data->env, "PWD", cwd);
+	return (0);
 }
 
 static int	ft_move_directoy(t_data *data, int option)
@@ -39,25 +41,25 @@ static int	ft_move_directoy(t_data *data, int option)
 	curr_dir = ft_getenv(data->env, "OLDPWD");
 	old_dir = ft_getenv(data->env, "PWD");
 	if (!curr_dir)
-	{
-		print_error("cd", "OLDPWD not set", NULL);
-		return (cleanup_and_return(curr_dir, old_dir, 1));
-	}
+		return (print_error("cd", "OLDPWD not set", NULL),
+			cleanup_and_return(curr_dir, old_dir, 1));
 	else if (!old_dir)
 	{
 		print_error("cd", "PWD not set", NULL);
 		return (cleanup_and_return(curr_dir, old_dir, 1));
 	}
 	if (curr_dir && chdir(curr_dir) == -1)
+	{
+		data->exit_status = 1;
 		return (handle_export_error(curr_dir, old_dir));
+	}
 	if (option == 1)
 	{
 		ft_putstr_fd(curr_dir, STDOUT_FILENO);
 		ft_putstr_fd("\n", STDOUT_FILENO);
 	}
-	ft_setenv(data->env, "PWD", curr_dir);
-	ft_setenv(data->env, "OLDPWD", old_dir);
-	return (cleanup_and_return(curr_dir, old_dir, 0));
+	return (ft_setenv(data->env, "PWD", curr_dir), ft_setenv(data->env,
+			"OLDPWD", old_dir), cleanup_and_return(curr_dir, old_dir, 0));
 }
 
 static int	check_for_arguments(t_cmd *cmds, t_data *data)
@@ -66,21 +68,24 @@ static int	check_for_arguments(t_cmd *cmds, t_data *data)
 	{
 		if (cmds->cmd_args[1][0] == '-' && !cmds->cmd_args[1][1])
 			return (ft_move_directoy(data, 1));
-		else if (cmds->cmd_args[1][0] == '-'
-			&& cmds->cmd_args[1][1] == '-' && !cmds->cmd_args[1][2])
+		else if (cmds->cmd_args[1][0] == '-' && cmds->cmd_args[1][1] == '-'
+			&& !cmds->cmd_args[1][2])
 			return (ft_move_directoy(data, 0));
 		else if (cmds->cmd_args[1][0] == '-' && cmds->cmd_args[1][1])
 		{
 			print_error("cd", "invalid option", cmds->cmd_args[1]);
+			data->exit_status = 1;
 			return (2);
 		}
 		else if (chdir(cmds->cmd_args[1]) == -1)
 		{
-			ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
+			ft_putstr_fd("minishell> cd: ", STDERR_FILENO);
 			perror(cmds->cmd_args[1]);
+			data->exit_status = 1;
 			return (EXIT_FAILURE);
 		}
-		update_pwd_value(data, cmds->cmd_args[1]);
+		if (update_pwd_value(data, cmds->cmd_args[1]) != 0)
+			return (EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);
 }
@@ -92,6 +97,7 @@ int	ft_cd(t_cmd *cmds, t_data *data)
 	if (cmds->cmd_args[0] && cmds->cmd_args[1] && cmds->cmd_args[2])
 	{
 		print_error("cd", "too many arguments", NULL);
+		data->exit_status = 1;
 		return (EXIT_FAILURE);
 	}
 	if (!cmds->cmd_args[1])
@@ -105,7 +111,8 @@ int	ft_cd(t_cmd *cmds, t_data *data)
 			value = getcwd(NULL, 0);
 		}
 		if (chdir(value) == -1)
-			return (perror("minishell: cd:"), free(value), EXIT_FAILURE);
+			return (ft_putstr_fd("minishell> cd: ", STDERR_FILENO),
+				perror(value), data->exit_status = 1, free(value), 1);
 		update_pwd_value(data, cmds->cmd_args[0]);
 		free(value);
 	}

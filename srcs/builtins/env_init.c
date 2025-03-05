@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_init.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmiilpal <mmiilpal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rbalazs <rbalazs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 19:28:14 by rbalazs           #+#    #+#             */
-/*   Updated: 2025/02/27 15:21:53 by mmiilpal         ###   ########.fr       */
+/*   Updated: 2025/03/01 19:30:57 by rbalazs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,39 +36,26 @@ t_env	*init_default_env(void)
 
 t_env	*init_env(char **env)
 {
-	int		i;
-	t_env	*head;
+	t_env	*env_head;
 	t_env	*new_node;
+	int		i;
 
+	env_head = NULL;
 	i = 0;
-	head = NULL;
-	while (env[i])
+	while (env && env[i])
 	{
 		new_node = init_env_node(env[i]);
 		if (!new_node)
-			return (ft_free_env(head), NULL);
-		append_env_variable(&head, new_node);
+		{
+			ft_free_env(env_head);
+			return (NULL);
+		}
+		append_env_variable(&env_head, new_node);
 		i++;
 	}
-	append_env_variable(&head, NULL);
-	if (!head)
-		head = init_default_env();
-	return (head);
-}
-
-static int	list_len(t_env *env_head)
-{
-	int		i;
-	t_env	*current;
-
-	i = 0;
-	current = env_head;
-	while (current)
-	{
-		i++;
-		current = current->next;
-	}
-	return (i);
+	if (!env_head)
+		env_head = init_default_env();
+	return (env_head);
 }
 
 static char	**fill_env_array(t_env *current, char **res)
@@ -89,6 +76,8 @@ static char	**fill_env_array(t_env *current, char **res)
 			if (!res[i])
 				return (ft_free_tab(res), NULL);
 		}
+		else
+			res[i] = tmp;
 		i++;
 		current = current->next;
 	}
@@ -96,14 +85,32 @@ static char	**fill_env_array(t_env *current, char **res)
 	return (res);
 }
 
+static int	count_env_variables(t_env *env_head)
+{
+	int		count;
+	t_env	*current;
+
+	count = 0;
+	current = env_head;
+	while (current)
+	{
+		if (current->name && current->value)
+			count++;
+		current = current->next;
+	}
+	return (count);
+}
+
 char	**init_env_array(t_env *env_head)
 {
-	t_env	*current;
-	char	**res;
+	char	**env_array;
+	int		env_count;
 
-	current = env_head;
-	res = malloc(sizeof(char *) * (list_len(current) + 1));
-	if (!res)
+	env_count = count_env_variables(env_head);
+	if (env_count == 0)
 		return (NULL);
-	return (fill_env_array(current, res));
+	env_array = (char **)malloc(sizeof(char *) * (env_count + 1));
+	if (!env_array)
+		return (NULL);
+	return (fill_env_array(env_head, env_array));
 }

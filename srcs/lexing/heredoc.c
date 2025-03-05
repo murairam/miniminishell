@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmiilpal <mmiilpal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rbalazs <rbalazs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:58:20 by mmiilpal          #+#    #+#             */
-/*   Updated: 2025/02/28 16:05:14 by mmiilpal         ###   ########.fr       */
+/*   Updated: 2025/03/01 18:50:31 by rbalazs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,14 +66,14 @@ static void	create_heredoc(char *delimiter, t_data *data, int quote_status)
 	if (fd == -1)
 		return (perror("open"));
 	signal(SIGINT, heredoc_sigint_handler);
-	while (g_exit_status != 130)
-	{	
+	while (g_received_signal != SIGINT)
+	{
 		line = readline("> ");
 		if ((line && ft_strcmp(line, delimiter) == 0))
 			break ;
 		if (line == NULL)
 		{
-			if (g_exit_status != 130)
+			if (g_received_signal != SIGINT)
 				print_warning(delimiter);
 			break ;
 		}
@@ -98,7 +98,7 @@ int	handle_heredoc(t_token *tmp, t_data *data, int option)
 	create_filename(data);
 	signal(SIGINT, heredoc_sigint_handler);
 	create_heredoc(tmp->value, data, tmp->quotes);
-	if (!data->heredoc)
-		return (1);
+	if (!data->heredoc || g_received_signal == SIGINT)
+		return (-1);
 	return (ret);
 }

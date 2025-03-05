@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_set_free.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmiilpal <mmiilpal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rbalazs <rbalazs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:15:45 by mmiilpal          #+#    #+#             */
-/*   Updated: 2025/02/28 14:15:27 by mmiilpal         ###   ########.fr       */
+/*   Updated: 2025/03/01 19:24:58 by rbalazs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ char	*ft_getenv(t_env *env_list, char *key)
 	t_env	*tmp;
 
 	tmp = env_list;
+	if (!env_list || !key)
+		return (NULL);
 	while (tmp)
 	{
 		if (ft_strcmp(tmp->name, key) == 0)

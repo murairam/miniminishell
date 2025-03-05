@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmiilpal <mmiilpal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rbalazs <rbalazs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 14:22:04 by mmiilpal          #+#    #+#             */
-/*   Updated: 2025/02/28 16:08:28 by mmiilpal         ###   ########.fr       */
+/*   Updated: 2025/03/01 19:03:09 by rbalazs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void	ft_free_all_and_exit(t_data *data, int exit_code)
 		ft_free_all(data);
 		if (data->env)
 			ft_free_env((data->env));
+		close_fds(data);
 	}
 	rl_clear_history();
 	exit(exit_code);

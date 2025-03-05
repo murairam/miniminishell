@@ -6,7 +6,7 @@
 /*   By: mmiilpal <mmiilpal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 14:56:45 by mmiilpal          #+#    #+#             */
-/*   Updated: 2025/02/28 16:07:45 by mmiilpal         ###   ########.fr       */
+/*   Updated: 2025/03/02 13:00:08 by mmiilpal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ int	validate_heredoc_syntax(t_token *tokens, t_data *data)
 			return (handle_invalid_syntax_error(tmp, data));
 		if (tmp->type == T_PIPE)
 		{
-			if (!tmp->prev || !tmp->next || tmp->prev->value[0] == '|' || \
-				tmp->next->value[0] == '|')
+			if (!tmp->prev || !tmp->next || tmp->prev->value[0] == '|'
+				|| tmp->next->value[0] == '|')
 				return (handle_invalid_syntax_error(tmp, data));
 		}
 		if (tmp->type >= T_REDIR_IN && tmp->type <= T_REDIR_HERE)
@@ -67,8 +67,8 @@ static int	check_token_syntax(t_token *tmp, t_data *data)
 		return (handle_invalid_syntax_error(tmp, data));
 	if (tmp->type == T_PIPE)
 	{
-		if (!tmp->prev || !tmp->next || tmp->prev->type == T_PIPE || \
-			tmp->next->type == T_PIPE)
+		if (!tmp->prev || !tmp->next || tmp->prev->type == T_PIPE
+			|| tmp->next->type == T_PIPE)
 			return (handle_invalid_syntax_error(tmp, data));
 	}
 	if (tmp->type >= T_REDIR_IN && tmp->type <= T_REDIR_HERE)

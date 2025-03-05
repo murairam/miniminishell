@@ -6,7 +6,7 @@
 /*   By: mmiilpal <mmiilpal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 13:16:40 by mmiilpal          #+#    #+#             */
-/*   Updated: 2025/02/28 16:07:10 by mmiilpal         ###   ########.fr       */
+/*   Updated: 2025/03/02 12:02:54 by mmiilpal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,8 @@ int	lexer(t_data *data)
 		return (EXIT_SUCCESS);
 	add_history(data->user_line);
 	if (!valid_quotes(data->user_line))
-		return (printf("Error: invalid quotes\n"), EXIT_FAILURE);
+		return (data->exit_status = 1, \
+				printf("minishell> error: quotes\n"), EXIT_FAILURE);
 	expanded_input = expanding(data->user_line, data);
 	if (!expanded_input)
 		return (EXIT_SUCCESS);
