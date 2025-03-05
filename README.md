@@ -1,17 +1,17 @@
 # 🐚 Welcome to Minishell!
 
-Minishell is a **mini Unix shell** built as part of our **42 Paris** curriculum. It’s a lightweight version of Bash, handling commands, pipes, and redirections. We had a lot of fun building it, and now you can have fun using it! 😃
+Minishell is a **mini Unix shell** built as part of our **42 Paris** curriculum. It’s a lightweight version of Bash, handling commands, pipes, and redirections. Writing our own shell was both **challenging and rewarding**—we had to dig deep into **process management, file descriptors, and signal handling**. Now you can use our shell and see how it works! 😃
 
 ---
 
 ## 🎉 Features
 
-- 🛠️ **Run Commands**: Execute built-in and external commands with ease.
-- 🔗 **Pipes (`|`)**: Chain multiple commands together.
-- 📂 **Redirections (`<`, `>`, `>>`, `<<`)**: Redirect input and output like a pro.
+- 🛠️ **Command Execution**: Run built-in and external commands like a real shell.
+- 🔗 **Pipes (`|`)**: Chain multiple commands together seamlessly.
+- 📂 **Redirections (`<`, `>`, `>>`, `<<`)**: Redirect input and output for files.
 - 🌍 **Environment Variables (`$VAR`)**: Expand variables dynamically.
-- 🎭 **Signal Handling**: Handles `Ctrl+C`, `Ctrl+D`, and `Ctrl+\` properly.
-- 🚀 **Custom Tokenizer & Parser**: Breaks down and processes user input.
+- 🎭 **Signal Handling**: No accidental shell crashes with `Ctrl+C`, `Ctrl+D`, or `Ctrl+\`.
+- 🚀 **Custom Tokenizer & Parser**: Breaks down and processes user input **from scratch**.
 
 ⚠️ **Note**: This project only includes the mandatory requirements—no `&&`, `||`, `;`, or wildcards (`*`).
 
@@ -21,11 +21,31 @@ Minishell is a **mini Unix shell** built as part of our **42 Paris** curriculum.
 
 Minishell was a team effort! **I worked on lexing, parsing, and signals**, while my friend **handled execution and built-in commands**. Here’s how it works under the hood:
 
-1. **Lexing**: The input is broken into tokens (words, operators, etc.), while keeping quotes intact and expanding variables like `$HOME`.
-2. **Parsing**: We check for syntax errors and organize the command structure.
-3. **Execution**: Built-ins like `cd`, `echo`, and `export` are handled internally, while external commands are passed to `execve`.
-4. **Pipes & Redirections**: Commands are linked with pipes, and I/O redirections are properly handled.
-5. **Signal Handling**: Prevents unwanted crashes from `Ctrl+C`, `Ctrl+D`, etc.
+### 🔍 Lexing (Tokenization)
+Before executing anything, the shell must first **break down** the input into individual tokens. Our lexer:
+- Recognizes different elements like **commands, arguments, operators (`|`, `<`, `>`)**, and **environment variables (`$VAR`)**.
+- Preserves text inside **quotes (`"` and `'`)** as a single unit.
+- Strips out extra whitespace so that parsing is easier.
+
+### 📌 Parsing
+The parser ensures the **tokens follow the correct syntax**. It detects invalid commands and structures them into a meaningful format.
+
+### 🚀 Execution
+After parsing, commands get passed to **execution**, which:
+- Recognizes built-in commands like `cd`, `echo`, and `export` and executes them **without forking a new process**.
+- Uses `execve()` for external commands like `/bin/ls`, creating a child process with `fork()`.
+- Manages **pipes and redirections** to properly send data between commands.
+
+### 🔗 Pipes & Redirections
+Handling pipes and redirections was one of the trickiest parts:
+- We use **file descriptors (`dup2()`)** to redirect input and output streams.
+- Commands connected by pipes (`ls | grep minishell`) communicate **through file descriptors** instead of writing to the terminal.
+
+### 🎭 Signal Handling
+To make the shell user-friendly, we implemented:
+- **`Ctrl+C`**: Interrupts a running process.
+- **`Ctrl+D`**: Signals the end of input.
+- **`Ctrl+\`**: Can terminate running processes.
 
 ---
 
@@ -56,123 +76,20 @@ exit
 
 ## 🚀 Try These Commands in Minishell
 
-### 📢 Basic Commands
-
 ```bash
 echo "Hello, World!"
-```
-
-```bash
 pwd
-```
-
-```bash
 cd ..
-pwd
-```
-
-```bash
 env | grep PATH
-```
-
-### 🌍 Environment Variable Handling
-
-```bash
 export TEST_VAR=42
 echo $TEST_VAR
-```
-
-```bash
 unset TEST_VAR
-echo $TEST_VAR
-```
-
-### 🔗 Using Pipes
-
-```bash
 ls -l | grep minishell
-```
-
-```bash
-echo "Hello World" | tr '[:lower:]' '[:upper:]'
-```
-
-```bash
 cat input.txt | sort | uniq -c
-```
-
-### 📂 Redirections
-
-```bash
 echo "This is a test" > output.txt
-```
-
-```bash
 cat < output.txt
-```
-
-```bash
 ls > list.txt
-```
-
-```bash
 echo "Appending this line" >> output.txt
-```
-
-### 🧪 Additional Test Cases
-
-```bash
-echo "Test" | wc -c
-```
-
-```bash
-head -n 5 < input.txt
-```
-
-```bash
-grep "search_term" < input.txt > output.txt
-```
-
-```bash
-cat non_existent_file
-```
-
-```bash
-cd /tmp
-pwd
-```
-
-```bash
-echo $?
-```
-
-```bash
-/bin/ls
-```
-
-```bash
-/bin/ls | wc -l
-```
-
-```bash
-echo "Hello" > temp.txt
-cat < temp.txt
-```
-
-```bash
-echo "Line 1" > temp.txt
-echo "Line 2" >> temp.txt
-cat < temp.txt
-```
-
-### 🎭 Signal Handling
-
-```bash
-# Press Ctrl+C to interrupt the current process
-```
-
-```bash
-# Press Ctrl+D to exit the shell
 ```
 
 ---
@@ -184,23 +101,6 @@ cat < temp.txt
 - [Writing Your Own Shell](https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf)
 - [42 School Minishell Example](https://github.com/twagger/minishell)
 - [Lexers & Parsers in Shells](https://trove.assistants.epita.fr/docs/42sh/lexer-parser)
-- [Parsing Expressions](https://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing)
-- [Signals in Shells](https://github.com/mcombeau/minishell/blob/main/sources/signals/signal.c)
-- [Minishell Bash HOWTO](https://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO.html)
-- [POSIX Shell Specification](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_10)
-- [Developing a Linux Shell](https://www.geeksforgeeks.org/developing-linux-based-shell/)
-- [Context Sensitivity in Grammar](https://eli.thegreenplace.net/2007/11/24/the-context-sensitivity-of-cs-grammar)
-- [Dash Shell Parser](https://git.kernel.org/pub/scm/utils/dash/dash.git/tree/src/parser.c)
-- [Oil Shell Insights](https://www.oilshell.org/blog/2019/02/07.html)
-
----
-
-## 🛠️ Development Workflow
-
-### 🐞 Debugging With Valgrind
-```bash
-valgrind --leak-check=full ./minishell
-```
 
 ---
 
@@ -214,7 +114,7 @@ valgrind --leak-check=full ./minishell
 
 ## 🐝 License
 
-This project is for educational purposes only. Feel free to use it as a learning reference.
+This project is for educational purposes only.
 
 ---
 
